@@ -14,9 +14,15 @@ export default class Edge {
     });
 
     this.geometry = new THREE.Geometry();
-    this.geometry.vertices.push(new THREE.Vertex(this.start.position));
-    this.geometry.vertices.push(new THREE.Vertex(this.end.position));
+    this.geometry.vertices.push(new THREE.Vector3(this.start.position));
+    this.geometry.vertices.push(new THREE.Vector3(this.end.position));
 
+    this.line = new THREE.Line(this.geometry, material);
+
+  }
+
+  addToScene() {
+    scene.add(this.line);
   }
 
 

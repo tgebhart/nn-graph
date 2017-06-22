@@ -9,12 +9,20 @@ export default class Vertex {
     this.geometry = geometry || new THREE.SphereGeometry(5, 32, 32);
     this.material = material || new THREE.MeshBasicMaterial({color: 0xffff00});
     this.shape = new THREE.Mesh(geometry, material);
-    this.shape.position.x = position.x || 0;
-    this.shape.position.y = position.y || 0;
-    this.shape.position.z = position.z || 0;
+    if (position) {
+      this.shape.position.x = position.x;
+      this.shape.position.y = position.y;
+      this.shape.position.z = position.z;
+    } else {
+      this.shape.position.x = 0;
+      this.shape.position.y = 0;
+      this.shape.position.z = 0;
+    }
 
     this.layer = layer;
     this.value = value;
+    this.ins = [];
+    this.outs = [];
 
   }
 
@@ -38,6 +46,14 @@ export default class Vertex {
 
   setValue(val) {
     this.value = val;
+  }
+
+  addIn(e) {
+    this.ins.push(e);
+  }
+
+  addOut(e) {
+    this.outs.push(e);
   }
 
 

@@ -1,5 +1,5 @@
-# Three.js Webpack ES6 Boilerplate
-A basic boilerplate for a Three.js project including the use of Webpack and ES6 syntax via Babel.
+# nn-graph
+Graphical view of neural networks provided by three.js
 
 ## Project Structure
 * build - Directory for built and compressed files from the npm build script
@@ -27,7 +27,7 @@ Then run dev script:
 npm run dev
 ```
 
-Spins up a webpack dev server at localhost:8080 and keeps track of all js and sass changes to files. Only reloads automatically upon save of js files.
+Spins up a webpack dev server at localhost:8083 and keeps track of all js and sass changes to files. Only reloads automatically upon save of js files.
 
 ## Build
 ```

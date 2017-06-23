@@ -18,7 +18,7 @@ export default class Network extends Graph {
   * @param {bool} vertical - Controls whether to render network vertically (instead of outwards in z direction)
   * @param {bool} perturbation - Controls perturbation distance of individual neurons in a layer
   */
-  constructor(betweenN=5, betweenL=50, vertical=false, perturbation=1) {
+  constructor(betweenN=2, betweenL=20, vertical=false, perturbation=0) {
 
     super();
     this.betweenN = betweenN;
@@ -29,6 +29,9 @@ export default class Network extends Graph {
     this.layers = {};
     this.seen = {};
 
+    this.vertices = [];
+    this.edges = [];
+
   }
 
   getNodePosition(layer, layers) {
@@ -37,7 +40,13 @@ export default class Network extends Graph {
     var y = 0.0;
     var z = 0.0;
 
-    y = this.betweenN * layers[layer];
+    if (layers[layer] % 2 == 0) {
+        y = this.betweenN * layers[layer];
+    }
+    else {
+      y = -this.betweenN * layers[layer];
+    }
+
     if (this.perturbation) {
      if (layers[layer] % 2 == 0) {
        z = this.perturbation;
@@ -47,7 +56,7 @@ export default class Network extends Graph {
      }
     }
 
-    x = this.betweenN * layer;
+    x = this.betweenL * layer;
 
     return new THREE.Vector3(x, y, z);
   }
@@ -79,7 +88,7 @@ export default class Network extends Graph {
     var edges = new Array(this.links.length);
 
     for (var i = 0; i < vertices.length; i++) {
-      vertices[i] = new Vertex(this.nodes.id);
+      vertices[i] = new Vertex(this.nodes[i].id, this.nodes[i].layer);
     }
 
     var edge;
@@ -94,22 +103,36 @@ export default class Network extends Graph {
       if (!this.seen[edge.source]) {
         this.updateLayerCount(src.layer);
         pos = this.getNodePosition(src.layer);
+        console.log(pos);
         src.setPosition(pos.x, pos.y, pos.z);
-        this.seen[edge.source] = 0;
+        this.seen[edge.source] = true;
       }
       if (!this.seen[edge.target]) {
         this.updateLayerCount(tar.layer);
         pos = this.getNodePosition(tar.layer);
-        src.setPosition(pos.x, pos.y, pos.z);
-        this.seen[edge.target] = 0;
+        console.log(pos);
+        tar.setPosition(pos.x, pos.y, pos.z);
+        this.seen[edge.target] = true;
       }
 
-      edges[i] = new Edge(src, tar);
+      edges[i] = new Edge(src, tar, edge.weight);
       src.addIn(edges[i]);
       tar.addOut(edges[i]);
 
     }
+    this.vertices = vertices;
+    this.edges = edges;
+  }
 
+  addToScene(scene) {
+    for (var i = 0; i < this.vertices.length; i++) {
+      //console.log(this.vertices[i]);
+      this.vertices[i].addToScene(scene);
+    }
+    for (var i = 0; i < this.edges.length; i++) {
+      //console.log(this.edges[i]);
+      this.edges[i].addToScene(scene);
+    }
   }
 
 

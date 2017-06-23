@@ -14,7 +14,7 @@ export default class Camera {
 
     // Initial sizing
     this.updateSize(renderer);
-    
+
     // Listeners
     window.addEventListener('resize', () => this.updateSize(renderer), false);
   }

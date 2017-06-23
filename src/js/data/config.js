@@ -36,13 +36,13 @@ export default {
     near: 0.0008
   },
   camera: {
-    fov: 40,
-    near: 2,
-    far: 1000,
+    fov: 75,
+    near: 1,
+    far: 10000,
     aspect: 1,
-    posX: 0,
+    posX: 50,
     posY: 30,
-    posZ: 40
+    posZ: -200
   },
   controls: {
     autoRotate: true,

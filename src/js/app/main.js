@@ -61,11 +61,21 @@ export default class Main {
     this.controls = new Controls(this.camera.threeCamera, container);
     this.light = new Light(this.scene);
 
+    var testGeo = new THREE.SphereGeometry(5, 32, 32);
+    var testMat = new THREE.MeshBasicMaterial({color: 0xffffff});
+    var testOb = new THREE.Mesh(testGeo, testMat);
+
     // Create and place lights in scene
     const lights = ['ambient', 'directional', 'point', 'hemi'];
     for(let i = 0; i < lights.length; i++) {
       this.light.place(lights[i]);
     }
+
+    //this.scene.add(nw.vertices[0].shape);
+    console.log(nw.vertices[0].shape);
+    console.log(testOb);
+
+    nw.addToScene(this.scene);
 
     // Set up rStats if dev environment
     if(Config.isDev) {
@@ -126,7 +136,7 @@ export default class Main {
     }
 
     // Delta time is sometimes needed for certain updates
-    //const delta = this.clock.getDelta();
+    const delta = this.clock.getDelta();
 
     // Call any vendor or module updates here
     TWEEN.update();

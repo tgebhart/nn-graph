@@ -1,14 +1,19 @@
 import * as THREE from 'three';
 
+
+
+const DEFAULT_VERTEX_RADIUS = 1;
+const DEFAULT_VERTEX_COLOR = 0xffffff;
+
 /** Default class of Vertex of graph. */
 export default class Vertex {
-  constructor(id, position, layer, geometry, material, value) {
+  constructor(id, layer, position, geometry, material, value) {
 
     this.id = id;
 
-    this.geometry = geometry || new THREE.SphereGeometry(5, 32, 32);
-    this.material = material || new THREE.MeshBasicMaterial({color: 0xffff00});
-    this.shape = new THREE.Mesh(geometry, material);
+    this.geometry = geometry || new THREE.SphereGeometry(DEFAULT_VERTEX_RADIUS, 12, 12);
+    this.material = material || new THREE.MeshBasicMaterial({color: DEFAULT_VERTEX_COLOR});
+    this.shape = new THREE.Mesh(this.geometry, this.material);
     if (position) {
       this.shape.position.x = position.x;
       this.shape.position.y = position.y;
@@ -54,6 +59,10 @@ export default class Vertex {
 
   addOut(e) {
     this.outs.push(e);
+  }
+
+  addToScene(scene) {
+    scene.add(this.shape);
   }
 
 

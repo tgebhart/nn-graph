@@ -18,7 +18,7 @@ export default class Network extends Graph {
   * @param {bool} vertical - Controls whether to render network vertically (instead of outwards in z direction)
   * @param {bool} perturbation - Controls perturbation distance of individual neurons in a layer
   */
-  constructor(betweenN=2, betweenL=20, vertical=false, perturbation=0) {
+  constructor(betweenN=2, betweenL=50, vertical=false, perturbation=0) {
 
     super();
     this.betweenN = betweenN;
@@ -28,6 +28,10 @@ export default class Network extends Graph {
 
     this.layers = {};
     this.seen = {};
+
+    this.currentX = 0;
+    this.currentY = 0;
+    this.perimeterPos = 0;
 
     this.vertices = [];
     this.edges = [];
@@ -40,33 +44,59 @@ export default class Network extends Graph {
     var y = 0.0;
     var z = 0.0;
 
-    if (layers[layer] % 2 == 0) {
-        y = this.betweenN * layers[layer];
-    }
-    else {
-      y = -this.betweenN * layers[layer];
+    // if (layers[layer] % 2 == 0) {
+    //     y = this.betweenN * layers[layer];
+    // }
+    // else {
+    //   y = -this.betweenN * layers[layer];
+    // }
+
+    x = layers[layer]['currentX'];
+    y = layers[layer]['currentY'];
+
+    if (layers[layer]['currentX'] == layers[layer]['currentY']) {
+      layers[layer]['currentX'] = layers[layer]['currentX'] + this.betweenN;
+      layers[layer]['currentY'] = 0;
+      layers[layer]['perimeterPos'] = 0;
+    } else {
+      if (layers[layer]['perimeterPos'] % 2 == 1) {
+        var tX = layers[layer]['currentX'];
+        layers[layer]['currentX'] = layers[layer]['currentY'];
+        layers[layer]['currentY'] = tX + this.betweenN;
+      } else {
+        var tX = layers[layer]['currentX'];
+        layers[layer]['currentX'] = layers[layer]['currentY'];
+        layers[layer]['currentY'] = tX;
+      }
+      layers[layer]['perimeterPos'] = layers[layer]['perimeterPos'] + 1;
     }
 
     if (this.perturbation) {
-     if (layers[layer] % 2 == 0) {
-       z = this.perturbation;
+     if (layers[layer]['count'] % 2 == 0) {
+       y = y + this.perturbation;
      }
      else {
-       z = -this.perturbation;
+       y = y - this.perturbation;
      }
     }
 
-    x = this.betweenL * layer;
+    z = this.betweenL * layer;
 
     return new THREE.Vector3(x, y, z);
   }
 
   updateLayerCount(layer) {
     if (this.layers[layer]) {
-      this.layers[layer] += 1;
+      this.layers[layer]['count'] += 1;
     }
     else {
-      this.layers[layer] = 1;
+      var t = {
+        'currentX' : 0,
+        'currentY' : 0,
+        'perimeterPos' : 0,
+        'count' : 1
+      }
+      this.layers[layer] = t;
     }
   }
 
@@ -86,9 +116,11 @@ export default class Network extends Graph {
 
     var vertices = new Array(this.nodes.length);
     var edges = new Array(this.links.length);
+    var vGeo = new THREE.BoxGeometry(1, 1, 0);
+    var vMat = new THREE.MeshBasicMaterial({color: 0x0ffff});
 
     for (var i = 0; i < vertices.length; i++) {
-      vertices[i] = new Vertex(this.nodes[i].id, this.nodes[i].layer);
+      vertices[i] = new Vertex(this.nodes[i].id, this.nodes[i].layer, undefined, vGeo, vMat, this.nodes[i].channel);
     }
 
     var edge;
@@ -103,14 +135,14 @@ export default class Network extends Graph {
       if (!this.seen[edge.source]) {
         this.updateLayerCount(src.layer);
         pos = this.getNodePosition(src.layer);
-        console.log(pos);
+        //console.log(pos);
         src.setPosition(pos.x, pos.y, pos.z);
         this.seen[edge.source] = true;
       }
       if (!this.seen[edge.target]) {
         this.updateLayerCount(tar.layer);
         pos = this.getNodePosition(tar.layer);
-        console.log(pos);
+        //console.log(pos);
         tar.setPosition(pos.x, pos.y, pos.z);
         this.seen[edge.target] = true;
       }
@@ -124,14 +156,19 @@ export default class Network extends Graph {
     this.edges = edges;
   }
 
-  addToScene(scene) {
+  addToScene(scene, channels) {
     for (var i = 0; i < this.vertices.length; i++) {
       //console.log(this.vertices[i]);
-      this.vertices[i].addToScene(scene);
+      if (channels.includes(this.vertices[i].channel)) {
+          this.vertices[i].addToScene(scene);
+      }
+
     }
     for (var i = 0; i < this.edges.length; i++) {
       //console.log(this.edges[i]);
-      this.edges[i].addToScene(scene);
+      if (channels.includes(this.edges[i].start.channel) && channels.includes(this.edges[i].end.channel)) {
+        this.edges[i].addToScene(scene);
+      }
     }
   }
 

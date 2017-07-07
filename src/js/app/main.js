@@ -12,7 +12,7 @@ import Network from './components/network';
 
 // Helpers
 import Geometry from './helpers/geometry';
-import json from 'json-loader!../data/test/simple_network.json';
+import json from 'json-loader!../data/test/convolution_14:27:35_07-07-17.json';
 
 // Model
 import Texture from './model/texture';
@@ -66,16 +66,15 @@ export default class Main {
     var testOb = new THREE.Mesh(testGeo, testMat);
 
     // Create and place lights in scene
-    const lights = ['ambient', 'directional', 'point', 'hemi'];
-    for(let i = 0; i < lights.length; i++) {
-      this.light.place(lights[i]);
-    }
+    // const lights = ['ambient', 'directional', 'point', 'hemi'];
+    // for(let i = 0; i < lights.length; i++) {
+    //   this.light.place(lights[i]);
+    // }
 
     //this.scene.add(nw.vertices[0].shape);
-    console.log(nw.vertices[0].shape);
-    console.log(testOb);
 
-    nw.addToScene(this.scene);
+
+    nw.addToScene(this.scene, ['input', 1]);
 
     // Set up rStats if dev environment
     if(Config.isDev) {

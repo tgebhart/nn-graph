@@ -7,7 +7,7 @@ const DEFAULT_VERTEX_COLOR = 0xffffff;
 
 /** Default class of Vertex of graph. */
 export default class Vertex {
-  constructor(id, layer, position, geometry, material, value) {
+  constructor(id, layer, position, geometry, material, channel, value) {
 
     this.id = id;
 
@@ -25,6 +25,7 @@ export default class Vertex {
     }
 
     this.layer = layer;
+    this.channel = channel;
     this.value = value;
     this.ins = [];
     this.outs = [];
@@ -51,6 +52,10 @@ export default class Vertex {
 
   setValue(val) {
     this.value = val;
+  }
+
+  setChannel(c) {
+    this.channel = c;
   }
 
   addIn(e) {

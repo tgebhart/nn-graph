@@ -117,7 +117,7 @@ export default class Network extends Graph {
     var vertices = new Array(this.nodes.length);
     var edges = new Array(this.links.length);
     var vGeo = new THREE.BoxGeometry(1, 1, 0);
-    var vMat = new THREE.MeshBasicMaterial({color: 0x0ffff});
+    var vMat = new THREE.MeshBasicMaterial({color: 0xff0000});
 
     for (var i = 0; i < vertices.length; i++) {
       vertices[i] = new Vertex(this.nodes[i].id, this.nodes[i].layer, undefined, vGeo, vMat, this.nodes[i].channel);
@@ -157,19 +157,32 @@ export default class Network extends Graph {
   }
 
   addToScene(scene, channels) {
+
+    if (channels) {
+      for (var i = 0; i < this.vertices.length; i++) {
+        //console.log(this.vertices[i]);
+        if (channels.includes(this.vertices[i].channel)) {
+            this.vertices[i].addToScene(scene);
+        }
+
+      }
+      for (var i = 0; i < this.edges.length; i++) {
+        //console.log(this.edges[i]);
+        if (channels.includes(this.edges[i].start.channel) && channels.includes(this.edges[i].end.channel)) {
+          this.edges[i].addToScene(scene);
+        }
+      }
+    }
     for (var i = 0; i < this.vertices.length; i++) {
       //console.log(this.vertices[i]);
-      if (channels.includes(this.vertices[i].channel)) {
-          this.vertices[i].addToScene(scene);
-      }
-
+      this.vertices[i].addToScene(scene);
     }
     for (var i = 0; i < this.edges.length; i++) {
       //console.log(this.edges[i]);
-      if (channels.includes(this.edges[i].start.channel) && channels.includes(this.edges[i].end.channel)) {
-        this.edges[i].addToScene(scene);
-      }
+
+      this.edges[i].addToScene(scene);
     }
+
   }
 
 

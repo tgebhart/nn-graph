@@ -12,7 +12,7 @@ import Network from './components/network';
 
 // Helpers
 import Geometry from './helpers/geometry';
-import json from 'json-loader!../data/test/convolution_14:27:35_07-07-17.json';
+import json from 'json-loader!../data/test/full_network_filter_by_layer_12:39:39_12-07-17.json';
 
 // Model
 import Texture from './model/texture';
@@ -74,7 +74,7 @@ export default class Main {
     //this.scene.add(nw.vertices[0].shape);
 
 
-    nw.addToScene(this.scene, ['input', 1]);
+    nw.addToScene(this.scene);
 
     // Set up rStats if dev environment
     if(Config.isDev) {
